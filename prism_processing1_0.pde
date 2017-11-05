@@ -46,20 +46,23 @@ void draw() {
       data_write (byte(0),_power);
     } else {
       send_crr_pos (follower.robot_g_state);
-      delay(1);
+      delay(2);
       send_goal_pos (Leader.robot_g_state); 
-      delay(1);
+      delay(2);
       data_request(byte(p_addr), byte(12));
-
+      delay(2);
       float [][] wheel_speed = {{b2f(subset(data_reg, 25, 4))}, {b2f(subset(data_reg, 29, 4))}, {b2f(subset(data_reg, 33, 4))}};
       follower.wheel_control(wheel_speed);
     }
-  } else if (millis()-data_request_time>100) {
+  } else if (millis()-data_request_time>500) {
+    data_request_time = millis();
+    println("device not responding");
     send_crr_pos (follower.robot_g_state);
-    delay(1);
+    delay(2);
     send_goal_pos (Leader.robot_g_state); 
-    delay(1);
+    delay(2);
     data_request(byte(p_addr), byte(12));
+    delay(2);
   }
 
   draw_cursor();

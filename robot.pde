@@ -57,6 +57,7 @@ class robot {
   }
   void state_update() {
     robot_g_state = runge(robot_g_state, reletive_state_dot, 0.001);
+    robot_g_state[2][0] = atan2(sin(robot_g_state[2][0]),cos(robot_g_state[2][0]));
   }
 
 
