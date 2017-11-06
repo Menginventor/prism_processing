@@ -1,10 +1,11 @@
-void toggle_power(){
-  if(power_state == 0)power_state = 1;
-  else power_state = 0;
-  
-  
+int sending_timeout_timer = millis();
+void begin_sending(){
+  sending_timeout_timer = millis();
+  sending = true;
 }
 void pack_end() {
+ 
+  sending = false;
   check_sum = byte(~check_sum);
   print_time_stamp();
   println("Receiving "+serial_buffer_index+" byte");

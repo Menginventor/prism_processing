@@ -7,7 +7,8 @@ void keyPressed() {
   }
 
   if (int(char(keyCode)) == 32) {//space bar
-    toggle_power();
+   if(data_reg[power_addr] == 0)data_reg[power_addr] = 1;
+   else data_reg[power_addr] = 0;
   }
   
   if (int(char(keyCode)) == 10) {//enter

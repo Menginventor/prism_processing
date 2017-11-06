@@ -1,6 +1,7 @@
 import processing.serial.*;
 Serial myPort;
 /*const*/
+byte power_addr = 0;
 byte crr_pos_addr = 1;
 byte crr_x_addr = 1;
 byte crr_y_addr = 5;
@@ -19,6 +20,11 @@ byte p3_addr = 33;
 boolean receiving = false;
 
 boolean requesting = false;
+
+boolean sending = false;
+
+boolean success_trancieve = false;
+
 byte requesting_addr = 0;
 byte requesting_len = 0;
 long serial_rx_time = millis();
@@ -43,7 +49,12 @@ void serial_connect(String port_name) {
 void serialEvent(Serial p) {
 
   serial_timeout_check();
+  
   byte inChar = byte(p.read()); 
+  if(!sending ){
+    println("error, we got unexpect data!");
+    return;
+  }
   if (!receiving) {
     serial_buffer_index = 0;
     check_sum = 0;
@@ -79,14 +90,22 @@ void serialEvent(Serial p) {
   serial_buffer[serial_buffer_index] = inChar;
   serial_buffer_index++;
   serial_rx_time = millis();
-} 
+}
+
 
 void serial_timeout_check() {
-  if (receiving && millis() - serial_rx_time > 2 &&receiving) {
+  if (millis() - serial_rx_time > 100 &&(receiving)) {
     receiving = false;
-    pack_end();
+    sending = false;
+    //pack_end();
 
     //println(b2f(serial_buffer));
+  }
+  if(millis()-data_request_time>100 &&requesting){
+    requesting = false;
+  }
+   if(millis()-sending_timeout_timer>100 &&sending){
+    sending = false;
   }
 }
 
@@ -153,11 +172,11 @@ void data_request(byte addr, byte len) {// read instruction = 0x02
   byte [] data ;
   byte [] l_len = {len};
   data = make_packet(byte(0x02), addr, l_len);//make_packet (byte instruction, byte addr, byte [] data) {
-  
+
   print_time_stamp();
-  println("sending "+str(data.length)+" byte");
+  println("requesting "+str(data.length)+" byte");
   for (int i = 0; i<data.length; i++) {
-    print(hex(data[i], 2)+' ');
+    print(hex(data[i], 2) + ' ');
   }
   println( );
   send_packet(data);
@@ -167,7 +186,7 @@ void data_write(byte addr, byte[] data_w) {// write instruction = 0x03
   byte [] data ;
 
   data = make_packet(byte(0x03), addr, data_w);//make_packet (byte instruction, byte addr, byte [] data) {
-  
+
   print_time_stamp();
   println("sending "+str(data.length)+" byte");
   for (int i = 0; i<data.length; i++) {
