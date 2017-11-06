@@ -1,5 +1,10 @@
 void print_time_stamp(){
-  print("["+str(hour())+":"+str(minute())+":"+str(second())+":"+str(millis()%1000)+"] ");
+  //print("["+str(hour())+":"+str(minute())+":"+str(second())+":"+str(millis()%1000)+"] ");
+  int millisec = millis();
+  int second = (millisec/1000)%60;
+  int minute = (millisec/1000/60)%60;
+  int hour = (millisec/1000/60/60);
+  print("["+str(hour)+":"+str(minute)+":"+str(second)+":"+str(millisec%1000)+"] ");
 }
 void draw_cursor() {
   float [][] mouse_mat = {{mouseX},{mouseY}};
@@ -17,4 +22,14 @@ void draw_cursor() {
   rect(width-coord_str_width-20, height-10-18, coord_str_width+20, 28);
   fill(0, 0, 0);
   text(coord_str, width-coord_str_width-10, height-10);
+   int millisec = millis();
+  int second = (millisec/1000)%60;
+  int minute = (millisec/1000/60)%60;
+  int hour = (millisec/1000/60/60);
+  String time = "runtime ["+str(hour)+":"+str(minute)+":"+str(second)+":"+str(millisec%1000)+"] ";
+  float time_str_width = textWidth(time);
+  fill(0, 255, 0);
+  rect(0, height-10-18, time_str_width+20, 28);
+  fill(0, 0, 0);
+   text(time , 10, height-10);
 }

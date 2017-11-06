@@ -15,6 +15,8 @@ void setup() {
   println(Serial.list());
   serial_connect(serial_port_name);
   frameRate(100);
+
+  data_reg[power_addr] = 1;
 }
 
 void all_state_update() {
@@ -31,10 +33,10 @@ void draw() {
   Leader.draw();
   follower.draw();
   //for (int i = 0; i < 2; i++) {
-   Leader_trace.update(Leader.robot_g_state);
-   follower_trace.update(follower.robot_g_state);
-   Leader.state_update();
-   follower.state_update();
+  Leader_trace.update(Leader.robot_g_state);
+  follower_trace.update(follower.robot_g_state);
+  Leader.state_update();
+  follower.state_update();
 
   keyboard_control1 (Leader);
 
@@ -53,7 +55,7 @@ void draw() {
 
   if (!sending && !requesting) {
     println(com_state);
-   
+
     if (com_state  == 0) {
 
       byte[] _power = {data_reg[power_addr]};
@@ -62,7 +64,7 @@ void draw() {
       com_state++;
     } else if (com_state  == 1) {
       send_crr_pos (follower.robot_g_state);
-        begin_sending();
+      begin_sending();
       com_state++;
     } else if (com_state  == 2) {
       send_goal_pos (Leader.robot_g_state); 
@@ -78,7 +80,6 @@ void draw() {
         follower.wheel_control(wheel_speed);
         com_state = 0;
         all_state_update();
-        
       }
     }
   } else {
