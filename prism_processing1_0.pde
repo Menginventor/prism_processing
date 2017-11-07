@@ -59,20 +59,21 @@ void draw() {
     if (com_state  == 0) {
 
       byte[] _power = {data_reg[power_addr]};
-      data_write (power_addr, _power);
-      begin_sending();
+      data_write (byte(0), _power);
+   
       com_state++;
+      
     } else if (com_state  == 1) {
       send_crr_pos (follower.robot_g_state);
-      begin_sending();
+    
       com_state++;
     } else if (com_state  == 2) {
       send_goal_pos (Leader.robot_g_state); 
-      begin_sending();
+   
       com_state++;
     } else if (com_state  == 3) {
       data_request(byte(p_addr), byte(12));
-      begin_sending();
+      
       com_state++;
     } else if (com_state  == 4) {
       if (!requesting) {
