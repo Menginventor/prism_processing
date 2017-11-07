@@ -19,7 +19,7 @@ void pack_end() {
     println("incoming packet's checksum error");
     return;
   }
-  if (serial_buffer[3] != 0) {
+  if (serial_buffer[3] != 0 && serial_buffer_index>2) {
     println("device report that sended command error");
      requesting = false;
     return;

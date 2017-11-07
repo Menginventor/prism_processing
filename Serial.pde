@@ -49,9 +49,9 @@ void serial_connect(String port_name) {
 void serialEvent(Serial p) {
 
   serial_timeout_check();
-  
+
   byte inChar = byte(p.read()); 
-  if(!sending ){
+  if (!sending ) {
     println("error, we got unexpect data!");
     return;
   }
@@ -77,11 +77,11 @@ void serialEvent(Serial p) {
   }
   if (serial_buffer_index >= 2 &&  serial_buffer_index < pack_len + 2) {
     check_sum += inChar;
-  } else if (serial_buffer_index == pack_len + 2) {
+  } else if (serial_buffer_index == pack_len + 2 &&serial_buffer_index>2) {
     serial_buffer[serial_buffer_index] = inChar;
     serial_buffer_index++;
     receiving = false;
-    pack_end();
+    pack_end();////
 
     return;
   }
@@ -94,18 +94,19 @@ void serialEvent(Serial p) {
 
 
 void serial_timeout_check() {
-  if (millis() - serial_rx_time > 100 &&(receiving)) {
+  if (millis() - serial_rx_time > 200 &&(receiving)) {
     receiving = false;
-    sending = false;
+    //sending = false;
     //pack_end();
 
     //println(b2f(serial_buffer));
   }
-  if(millis()-data_request_time>100 &&requesting){
+  if (millis()-data_request_time>200 &&requesting) {
     requesting = false;
   }
-   if(millis()-sending_timeout_timer>100 &&sending){
+  if (millis()-sending_timeout_timer>200 &&sending) {
     sending = false;
+    println("error, sending time out!");
   }
 }
 
@@ -140,7 +141,6 @@ void send_packet (byte[] data) {
   for (int i = 0; i<data.length; i++) {
     myPort.write(data[i]);
   }
-  
 }
 byte checksum (byte[] data) {
   byte result = 0;

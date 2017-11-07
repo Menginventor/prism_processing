@@ -5,6 +5,7 @@ trace Leader_trace = new trace(color(0, 255, 0));
 trace follower_trace = new trace(color(255, 0, 0));
 
 int com_state = 0;
+int request_timer = millis();
 void setup() {
   size(1000, 1000);
   Leader_trace.init();
@@ -14,7 +15,7 @@ void setup() {
 
   println(Serial.list());
   serial_connect(serial_port_name);
-  frameRate(100);
+  frameRate(50);
 
   data_reg[power_addr] = 1;
 }
@@ -48,7 +49,8 @@ void draw() {
    } else {
    */
 
-  if (!sending && !requesting) {
+  if (!sending && !requesting ) {
+    request_timer = millis();
     //println(com_state);
     if(com_state > 3)com_state = 0;
     if (com_state  == 0) {
@@ -83,7 +85,7 @@ void draw() {
     } 
     com_state++;
   } else {
-    println(str(sending)+" , "+str(requesting)+" , "+str(receiving));
+    //println(str(sending)+" , "+str(requesting)+" , "+str(receiving));
   }
   //}
 
