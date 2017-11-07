@@ -54,12 +54,12 @@ void draw() {
    */
 
   if (!sending && !requesting) {
-    println(com_state);
+    //println(com_state);
 
     if (com_state  == 0) {
 
       byte[] _power = {data_reg[power_addr]};
-      data_write (byte(0), _power);
+      data_write (power_addr, _power);
       begin_sending();
       com_state++;
     } else if (com_state  == 1) {
