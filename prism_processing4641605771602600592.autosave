@@ -50,34 +50,33 @@ void draw() {
 
   if (!sending && !requesting) {
     //println(com_state);
-    if(com_state > 4)com_state = 0;
+    if(com_state>3)com_state = 0;
     if (com_state  == 0) {
 
       byte[] _power = {data_reg[power_addr]};
       data_write (byte(0), _power);
    
-     
+      
       
     } else if (com_state  == 1) {
-      send_crr_pos (follower.robot_g_state);
+      send_goal_pos (Leader.robot_g_state); 
+    
     
       
     } else if (com_state  == 2) {
-      send_goal_pos (Leader.robot_g_state); 
-   
-     
+       data_request(byte(crr_pos_addr), byte(12));
+      
+      
     } else if (com_state  == 3) {
-      data_request(byte(p_addr), byte(12));
-      
-      
-    } else if (com_state  == 4) {
-      if (!requesting) {
+     if (!requesting) {
         float [][] wheel_speed = {{b2f(subset(data_reg, 25, 4))}, {b2f(subset(data_reg, 29, 4))}, {b2f(subset(data_reg, 33, 4))}};
         follower.wheel_control(wheel_speed);
         com_state = 0;
        
       }
-    }
+      
+     
+    } 
     com_state++;
   } else {
     println(str(sending)+" , "+str(requesting)+" , "+str(receiving));
