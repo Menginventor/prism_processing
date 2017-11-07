@@ -69,9 +69,13 @@ void draw() {
      
     } else if (com_state  == 3) {
        if (!requesting) {
-        float [][] wheel_speed = {{b2f(subset(data_reg, 25, 4))}, {b2f(subset(data_reg, 29, 4))}, {b2f(subset(data_reg, 33, 4))}};
-        follower.wheel_control(wheel_speed);
-        com_state = 0;
+        float crr_x = b2f(subset(data_reg, crr_x_addr, 4));
+        float crr_y = b2f(subset(data_reg, crr_y_addr, 4));
+        float crr_h = b2f(subset(data_reg, crr_h_addr, 4));
+        
+        float [][] crr_state = {{crr_x }, {crr_y}, {crr_h}};
+        follower.robot_g_state = crr_state;
+        
        
       }
       
