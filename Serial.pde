@@ -140,6 +140,7 @@ void send_packet (byte[] data) {
   for (int i = 0; i<data.length; i++) {
     myPort.write(data[i]);
   }
+  com_state++;
 }
 byte checksum (byte[] data) {
   byte result = 0;
