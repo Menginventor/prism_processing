@@ -19,12 +19,7 @@ void setup() {
   data_reg[power_addr] = 1;
 }
 
-void all_state_update() {
-  Leader_trace.update(Leader.robot_g_state);
-  follower_trace.update(follower.robot_g_state);
-  Leader.state_update();
-  follower.state_update();
-}
+
 void draw() {
   background(0);
   Leader_trace.draw() ;
@@ -80,7 +75,7 @@ void draw() {
         float [][] wheel_speed = {{b2f(subset(data_reg, 25, 4))}, {b2f(subset(data_reg, 29, 4))}, {b2f(subset(data_reg, 33, 4))}};
         follower.wheel_control(wheel_speed);
         com_state = 0;
-        all_state_update();
+       
       }
     }
   } else {
