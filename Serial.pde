@@ -136,7 +136,6 @@ byte[] make_packet (byte instruction, byte addr, byte [] data) {
 }
 
 void send_packet (byte[] data) {
-  begin_sending();
   for (int i = 0; i<data.length; i++) {
     myPort.write(data[i]);
   }
