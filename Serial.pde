@@ -30,7 +30,7 @@ byte requesting_len = 0;
 long serial_rx_time = millis();
 
 String serial_port_name = "COM5";
-int serial_baud = 115200;
+int serial_baud = 9600;
 long serial_time_char = (10L*1000000000L)/115200L;
 byte [] serial_buffer = new byte [64];
 int serial_buffer_index = 0;
@@ -106,6 +106,7 @@ void serial_timeout_check() {
   }
   if (millis()-sending_timeout_timer>200 &&sending) {
     sending = false;
+    //request_timer += 1000;
     println("error, sending time out!");
   }
 }

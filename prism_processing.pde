@@ -49,7 +49,7 @@ void draw() {
    } else {
    */
 
-  if (!sending && !requesting ) {
+  if (!sending && !requesting &&millis()-request_timer>=10 ) {
     request_timer = millis();
     //println(com_state);
     if(com_state > 3)com_state = 0;
