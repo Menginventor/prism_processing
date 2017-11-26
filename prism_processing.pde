@@ -18,6 +18,9 @@ void setup() {
   frameRate(50);
 
   data_reg[power_addr] = 1;
+  Leader.reletive_state_dot[0][0] = 2;
+  Leader.reletive_state_dot[1][0] = 0;
+  Leader.reletive_state_dot[2][0] = 0.01;
 }
 
 
@@ -34,7 +37,7 @@ void draw() {
   Leader.state_update();
   follower.state_update();
 
-  keyboard_control1 (Leader);
+  //keyboard_control1 (Leader);
 
   //keyboard_control2 (follower);
   serial_timeout_check() ;
