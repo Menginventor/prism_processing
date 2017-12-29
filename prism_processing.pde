@@ -1,10 +1,13 @@
-
+/*
+Physical syn.
+*/
 robot Leader = new robot(color(0, 255, 0));
 robot follower = new robot(color(255, 0, 0));
 trace Leader_trace = new trace(color(0, 255, 0));
 trace follower_trace = new trace(color(255, 0, 0));
 
 int com_state = 0;
+int request_timer = millis();
 void setup() {
   size(1000, 1000);
   Leader_trace.init();
@@ -14,9 +17,14 @@ void setup() {
 
   println(Serial.list());
   serial_connect(serial_port_name);
-  frameRate(100);
+  frameRate(50);
 
   data_reg[power_addr] = 1;
+  /*
+  Leader.reletive_state_dot[0][0] = 2;
+  Leader.reletive_state_dot[1][0] = 0;
+  Leader.reletive_state_dot[2][0] = 0.01;
+  */
 }
 
 
@@ -48,9 +56,10 @@ void draw() {
    } else {
    */
 
-  if (!sending && !requesting) {
+  if (!sending && !requesting &&millis()-request_timer>=10 ) {
+    request_timer = millis();
     //println(com_state);
-    if(com_state > 4)com_state = 0;
+    if(com_state > 3)com_state = 0;
     if (com_state  == 0) {
 
       byte[] _power = {data_reg[power_addr]};
@@ -59,28 +68,32 @@ void draw() {
      
       
     } else if (com_state  == 1) {
-      send_crr_pos (follower.robot_g_state);
+       send_goal_pos (Leader.robot_g_state); 
+      
     
       
     } else if (com_state  == 2) {
-      send_goal_pos (Leader.robot_g_state); 
+      data_request(byte(crr_pos_addr), byte(12));
    
      
     } else if (com_state  == 3) {
-      data_request(byte(p_addr), byte(12));
-      
-      
-    } else if (com_state  == 4) {
-      if (!requesting) {
-        float [][] wheel_speed = {{b2f(subset(data_reg, 25, 4))}, {b2f(subset(data_reg, 29, 4))}, {b2f(subset(data_reg, 33, 4))}};
-        follower.wheel_control(wheel_speed);
-        com_state = 0;
+       if (!requesting) {
+        float crr_x = b2f(subset(data_reg, crr_x_addr, 4));
+        float crr_y = b2f(subset(data_reg, crr_y_addr, 4));
+        float crr_h = b2f(subset(data_reg, crr_h_addr, 4));
+        
+        float [][] crr_state = {{crr_x *100}, {crr_y*100}, {crr_h}};
+        follower.robot_g_state = crr_state;
+        
+        
        
       }
-    }
+      
+      
+    } 
     com_state++;
   } else {
-    println(str(sending)+" , "+str(requesting)+" , "+str(receiving));
+    //println(str(sending)+" , "+str(requesting)+" , "+str(receiving));
   }
   //}
 

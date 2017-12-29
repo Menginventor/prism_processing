@@ -30,7 +30,7 @@ byte requesting_len = 0;
 long serial_rx_time = millis();
 
 String serial_port_name = "COM5";
-int serial_baud = 115200;
+int serial_baud = 9600;
 long serial_time_char = (10L*1000000000L)/115200L;
 byte [] serial_buffer = new byte [64];
 int serial_buffer_index = 0;
@@ -49,9 +49,9 @@ void serial_connect(String port_name) {
 void serialEvent(Serial p) {
 
   serial_timeout_check();
-  
+
   byte inChar = byte(p.read()); 
-  if(!sending ){
+  if (!sending ) {
     println("error, we got unexpect data!");
     return;
   }
@@ -77,11 +77,11 @@ void serialEvent(Serial p) {
   }
   if (serial_buffer_index >= 2 &&  serial_buffer_index < pack_len + 2) {
     check_sum += inChar;
-  } else if (serial_buffer_index == pack_len + 2) {
+  } else if (serial_buffer_index == pack_len + 2 &&serial_buffer_index>2) {
     serial_buffer[serial_buffer_index] = inChar;
     serial_buffer_index++;
     receiving = false;
-    pack_end();
+    pack_end();////
 
     return;
   }
@@ -94,18 +94,20 @@ void serialEvent(Serial p) {
 
 
 void serial_timeout_check() {
-  if (millis() - serial_rx_time > 100 &&(receiving)) {
+  if (millis() - serial_rx_time > 200 &&(receiving)) {
     receiving = false;
-    sending = false;
+    //sending = false;
     //pack_end();
 
     //println(b2f(serial_buffer));
   }
-  if(millis()-data_request_time>100 &&requesting){
+  if (millis()-data_request_time>200 &&requesting) {
     requesting = false;
   }
-   if(millis()-sending_timeout_timer>100 &&sending){
+  if (millis()-sending_timeout_timer>200 &&sending) {
     sending = false;
+    //request_timer += 1000;
+    println("error, sending time out!");
   }
 }
 
@@ -140,7 +142,6 @@ void send_packet (byte[] data) {
   for (int i = 0; i<data.length; i++) {
     myPort.write(data[i]);
   }
-  
 }
 byte checksum (byte[] data) {
   byte result = 0;
@@ -174,13 +175,15 @@ void data_request(byte addr, byte len) {// read instruction = 0x02
   byte [] data ;
   byte [] l_len = {len};
   data = make_packet(byte(0x02), addr, l_len);//make_packet (byte instruction, byte addr, byte [] data) {
-
+/*
   print_time_stamp();
   println("requesting "+str(data.length)+" byte");
+  
   for (int i = 0; i<data.length; i++) {
     print(hex(data[i], 2) + ' ');
   }
   println( );
+  */
   send_packet(data);
   data_request_time = millis();
 }
@@ -188,12 +191,12 @@ void data_write(byte addr, byte[] data_w) {// write instruction = 0x03
   byte [] data ;
 
   data = make_packet(byte(0x03), addr, data_w);//make_packet (byte instruction, byte addr, byte [] data) {
-
+/*
   print_time_stamp();
   println("sending "+str(data.length)+" byte");
   for (int i = 0; i<data.length; i++) {
     print(hex(data[i], 2)+' ');
   }
-  println( );
+  println( );*/
   send_packet(data);
 }

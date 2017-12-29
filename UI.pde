@@ -11,7 +11,16 @@ void draw_cursor() {
   float [][] pos_mat = canvas_tranform(mouse_mat);
   float [][] frame_mat =invert_canvas_tranform(pos_mat );
   textSize(18);
-  String coord_str = str(pos_mat[0][0])+","+str(pos_mat[1][0]);
+  //String coord_str = str(pos_mat[0][0])+","+str(pos_mat[1][0]);
+    String coord_str = "";
+    if(pos_mat[0][0]>=0)coord_str+=" ";
+    if(pos_mat[0][0]<100 && pos_mat[0][0]>-100)coord_str+=" ";
+    if(pos_mat[0][0]<10 && pos_mat[0][0]>-10)coord_str+=" ";
+    coord_str += str(pos_mat[0][0])+",";
+    if(pos_mat[1][0]>=0)coord_str+=" ";
+    if(pos_mat[1][0]<100 && pos_mat[1][0]>-100)coord_str+=" ";
+    if(pos_mat[1][0]<10 && pos_mat[1][0]>-10)coord_str+=" ";
+    coord_str += str(pos_mat[1][0])+",";
   //println(coord_str);
   float coord_str_width = textWidth(coord_str);
   strokeWeight(1);

@@ -3,7 +3,7 @@ void keyPressed() {
   char _key = char(keyCode);
   if (keycode_pressed.indexOf(_key) == -1) {
     keycode_pressed += _key;
-     println(str(int(char(keyCode)))+" , "+keycode_pressed);
+     //println(str(int(char(keyCode)))+" , "+keycode_pressed);
   }
 
   if (int(char(keyCode)) == 32) {//space bar
